@@ -5,7 +5,7 @@ def CANNED_CI_MESSAGE = '{"commit":{"username":"zdohnal","stats":{"files":{"READ
 
 def libraries = ['cico-pipeline'           : ['master', 'https://github.com/CentOS/cico-pipeline-library.git'],
                  'ci-pipeline'             : ['master', 'https://github.com/CentOS-PaaS-SIG/ci-pipeline.git'],
-                 'fedora-upstream-pipeline': ['master', 'https://github.com/CentOS-PaaS-SIG/upstream-fedora-pipeline.git']]
+                 'fedora-upstream-pipeline': ['packageMetrics', 'https://github.com/joejstuart/upstream-fedora-pipeline.git']]
 
 libraries.each { name, repo ->
     library identifier: "${name}@${repo[0]}",
