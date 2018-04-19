@@ -327,7 +327,7 @@ def checkBranch() {
  * @param request
  * @return
  */
-def repoFromRequest(def request) {
+def repoFromRequest(def request=null) {
     if (!env.fed_repo) {
         try {
             def pkgUrlTok = request[0].tokenize('/')
@@ -343,7 +343,7 @@ def repoFromRequest(def request) {
  * @param msgRelease
  * @return null or fedora release
  */
-def checkRelease(String msgRelease) {
+def checkRelease(String msgRelease=null) {
     def targetRelease = null
 
     def release = msgRelease.tokenize('.').last()
