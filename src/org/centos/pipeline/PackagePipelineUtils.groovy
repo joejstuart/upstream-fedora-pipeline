@@ -327,10 +327,10 @@ def checkBranch() {
  * @param request
  * @return
  */
-def repoFromRequest(def request=null) {
+def repoFromRequest() {
     if (!env.fed_repo) {
         try {
-            def pkgUrlTok = request[0].tokenize('/')
+            def pkgUrlTok = env.fed_msg_request[0].tokenize('/')
             env.fed_repo = pkgUrlTok.last().tokenize('.')[0]
         } catch(e) {
             env.fed_repo = "pkg name unavailable"
@@ -343,10 +343,10 @@ def repoFromRequest(def request=null) {
  * @param msgRelease
  * @return null or fedora release
  */
-def checkRelease(String msgRelease=null) {
+def checkRelease() {
     def targetRelease = null
 
-    def release = msgRelease.tokenize('.').last()
+    def release = env.msg_release.tokenize('.').last()
     if (release ==~ /fc[2-9][0-9]/) {
         targetRelease = release[2, 3]
     } else {

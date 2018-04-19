@@ -93,7 +93,11 @@ class packagepipelineUtils implements Serializable {
         return packagePipelineUtils.checkBranch()
     }
 
-    def repoFromRequest(def request=null) {
+    /**
+     * 
+     * @return
+     */
+    def repoFromRequest() {
         packagepipelineUtils.repoFromRequest(request)
     }
 
@@ -102,7 +106,7 @@ class packagepipelineUtils implements Serializable {
      * @param msgRelease
      * @return null or fedora release
      */
-    def checkRelease(String msgRelease=null) {
+    def checkRelease(String msgRelease) {
         return packagepipelineUtils.checkRelease(msgRelease)
     }
 
