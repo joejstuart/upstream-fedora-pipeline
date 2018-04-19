@@ -106,7 +106,7 @@ class packagepipelineUtils implements Serializable {
      * @param msgRelease
      * @return null or fedora release
      */
-    def checkRelease(String msgRelease) {
+    def checkRelease() {
         return packagepipelineUtils.checkRelease()
     }
 
