@@ -45,6 +45,8 @@ node() {
                     print "CI_MESSAGE"
                     print CI_MESSAGE
                     pipelineUtils.flattenJSON('fed', env.CI_MESSAGE)
+
+                    sh 'env'
                     packagepipelineUtils.repoFromRequest(env.fed_msg_request)
                     pipelineUtils.updateBuildDisplayAndDescription()
                     targetRelease = packagepipelineUtils.checkRelease(env.msg_release)
