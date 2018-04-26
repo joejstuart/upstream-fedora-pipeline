@@ -325,30 +325,6 @@ def checkBranch() {
 }
 
 /**
- * Parse the repo name from the request list.
- * Sets env.fed_repo
- * @return
- */
-def repoFromRequest() {
-    if (!env.fed_repo) {
-        try {
-            def pkgUrlTok = env.fed_request_0.tokenize('/')
-
-            if (pkgUrlTok[1] == 'pkgs.fedoraproject.org') {
-                env.fed_repo = pkgUrlTok.last().tokenize('?')[0]
-            } else if (pkgUrlTok[1] == 'src.fedoraproject.org') {
-                env.fed_repo = pkgUrlTok.last().tokenize('.')[0]
-            } else {
-                throw new Exception("Invalid request url: ${pkgUrlTok[1]}")
-
-            }
-        } catch(e) {
-            throw new Exception('Package name unavailable', e)
-        }
-    }
-}
-
-/**
  * Set branch and fed_branch based on the candidate branch.
  * @return
  */

@@ -95,14 +95,6 @@ class packagepipelineUtils implements Serializable {
     }
 
     /**
-     * Parse the repo out of the request
-     * @return None
-     */
-    def repoFromRequest() {
-        packagePipelineUtils.repoFromRequest()
-    }
-
-    /**
      * Set the branch based off of the candidate branch
      * @return
      */
