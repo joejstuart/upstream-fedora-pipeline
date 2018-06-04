@@ -56,7 +56,7 @@ timestamps {
 
                 stage(stepName) {
                     branch = stageVars[stepName]['branch']
-                    scheduleBuild(buildName: "fedora-${branch}-build-pipeline", params: params)
+                    scheduleBuild(buildName: "fedora-joe-build-pipeline", params: params)
                 }
 
             }
