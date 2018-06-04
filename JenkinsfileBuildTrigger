@@ -37,8 +37,8 @@ timestamps {
             stepName = 'upstream-fedora-pipeline-build-trigger'
             stage(stepName) {
 
-                skippedMsg = pipelineData.setMessageFields('package.ignored', 'build')
-                queuedMsg = pipelineData.setMessageFields('package.queued', 'build')
+                skippedMsg = pipelineData.setMessageFields('package.ignored', 'build', env.CI_MESSAGE)
+                queuedMsg = pipelineData.setMessageFields('package.queued', 'build', env.CI_MESSAGE)
 
                 validMessage = buildTrigger(skippedMsg: skippedMsg, queuedMsg: queuedMsg) {
                     pipelineData.upstreamTrigger()
