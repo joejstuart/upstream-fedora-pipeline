@@ -91,7 +91,7 @@ class packagepipelineUtils implements Serializable {
      * @return bool
      */
     def checkBranch(String branch) {
-        return packagePipelineUtils.checkBranch(String branch)
+        return packagePipelineUtils.checkBranch(branch)
     }
 
     def influxDBPrefix() {
