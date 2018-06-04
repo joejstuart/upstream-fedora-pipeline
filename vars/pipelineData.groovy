@@ -68,7 +68,7 @@ def stageVars(String ciMessage) {
 
                     ],
 
-            'trigger':
+            'upstream-fedora-pipeline-build-trigger':
                     [
                             fed_repo                 : fed_repo,
                             fed_branch               : branches[1],
