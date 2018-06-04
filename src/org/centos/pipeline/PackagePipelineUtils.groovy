@@ -308,15 +308,15 @@ def timedMeasurement() {
  * Function to check if fed_branch is master or fXX, XX > 19
  * @return bool
  */
-def checkBranch() {
+def checkBranch(String branch) {
     def result = false
 
-    if (env.fed_branch ==~ /f[2-9][0-9]/) {
+    if (branch ==~ /f[2-9][0-9]/) {
         result = true
-    } else if (env.fed_branch == 'master') {
+    } else if (branch == 'master') {
         result = true
     } else {
-        println "Branch ${env.fed_branch} is not being checked at this time."
+        println "Branch ${branch} is not being checked at this time."
     }
 
     return result

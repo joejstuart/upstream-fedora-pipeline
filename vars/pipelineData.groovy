@@ -72,7 +72,8 @@ def stageVars(String ciMessage) {
                     [
                             fed_repo                 : fed_repo,
                             fed_branch               : branches[1],
-                            fed_instance             : message['instance']
+                            fed_instance             : message['instance'],
+                            branch                   : branches[0]
                     ]
 
     ]
@@ -82,10 +83,10 @@ def stageVars(String ciMessage) {
 
 def upstreamTrigger() {
     def stageVars = stageVars()['trigger']
-    def targetBranch = packagepipelineUtils.checkBranch()
+    def targetBranch = packagepipelineUtils.checkBranch(stageVars['branch'])
     def testsExist = pipelineUtils.checkTests(stageVars['fed_repo'], stageVars['fed_branch'], 'classic')
     def primaryKoji = stageVars['fed_instance'] == "primary"
-    pipelineUtils.initializeAuditFile(msgAuditFile)
+    pipelineUtils.initializeAuditFile('messages/auditfile.json')
 
     return targetBranch && testsExist && primaryKoji
 }
