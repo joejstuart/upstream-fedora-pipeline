@@ -98,9 +98,10 @@ def buildVars(String ciMessage) {
     def branches = utils.setBuildBranch(message['request'][1])
     def fed_repo = utils.repoFromRequest(message['request'][0])
 
+    currentBuild.displayName = "Build #${env.BUILD_NUMBER} - Branch: ${branches[0]} - Package: ${fed_repo}"
+
     def vars = [:]
     vars['package_name'] = fed_repo
-    vars['displayName'] = "Build #${env.BUILD_NUMBER} - Branch: ${branches[0]} - Package: ${fed_repo}"
     return vars
 }
 
