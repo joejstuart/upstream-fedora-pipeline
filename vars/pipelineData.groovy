@@ -82,7 +82,7 @@ def stageVars(String ciMessage) {
 }
 
 def upstreamTrigger() {
-    def stageVars = stageVars()['trigger']
+    def stageVars = pipelineData.stageVars()['trigger']
     def targetBranch = packagepipelineUtils.checkBranch(stageVars['branch'])
     def testsExist = pipelineUtils.checkTests(stageVars['fed_repo'], stageVars['fed_branch'], 'classic')
     def primaryKoji = stageVars['fed_instance'] == "primary"
