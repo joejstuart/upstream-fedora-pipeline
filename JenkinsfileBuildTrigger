@@ -41,7 +41,7 @@ timestamps {
                 queuedMsg = pipelineData.setMessageFields('package.queued', 'build', env.CI_MESSAGE)
 
                 validMessage = buildTrigger(skippedMsg: skippedMsg, queuedMsg: queuedMsg) {
-                    pipelineData.upstreamTrigger(env.CI_MESSAGE)
+                    pipelineData.upstreamTrigger(stageVars[stepName])
 
                 }
 
