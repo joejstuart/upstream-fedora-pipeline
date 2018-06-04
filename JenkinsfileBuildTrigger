@@ -3,7 +3,7 @@
 
 timestamps {
     def libraries = ['ci-pipeline'             : ['master', 'https://github.com/CentOS-PaaS-SIG/ci-pipeline.git'],
-                     'upstream-fedora-pipeline': ['master', 'https://github.com/CentOS-PaaS-SIG/upstream-fedora-pipeline.git'],
+                     'upstream-fedora-pipeline': ['CONTRA-503', 'https://github.com/joejstuart/upstream-fedora-pipeline.git'],
                      'contra-lib'              : ['messaging', 'https://github.com/joejstuart/contra-lib.git']]
 
     libraries.each { name, repo ->
