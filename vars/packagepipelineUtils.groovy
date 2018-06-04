@@ -90,8 +90,8 @@ class packagepipelineUtils implements Serializable {
      * Function to check if fed_branch is master or fXX, XX > 19
      * @return bool
      */
-    def checkBranch() {
-        return packagePipelineUtils.checkBranch()
+    def checkBranch(String branch) {
+        return packagePipelineUtils.checkBranch(String branch)
     }
 
     def influxDBPrefix() {
