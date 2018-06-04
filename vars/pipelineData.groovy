@@ -59,6 +59,20 @@ def stageVars(String ciMessage) {
                             build_pr_id              : (env.fed_pr_id) ?: '',
                             TEST_SUBJECTS            : "${env.WORKSPACE}/images/test_subject.qcow2"
 
+                    ],
+
+            'schedule build':
+                    [
+                            branch                   : branches[1],
+                            PROVIDED_KOJI_TASKID     : message['task_id']
+
+                    ],
+
+            'trigger':
+                    [
+                            fed_repo                 : fed_repo,
+                            fed_branch               : branches[1],
+                            fed_instance             : message['instance']
                     ]
 
     ]
@@ -66,8 +80,14 @@ def stageVars(String ciMessage) {
     return stages
 }
 
-def ciMessage(String ciMessage) {
-    return readJSON text: ciMessage
+def upstreamTrigger() {
+    def stageVars = stageVars()['trigger']
+    def targetBranch = packagepipelineUtils.checkBranch()
+    def testsExist = pipelineUtils.checkTests(stageVars['fed_repo'], stageVars['fed_branch'], 'classic')
+    def primaryKoji = stageVars['fed_instance'] == "primary"
+    pipelineUtils.initializeAuditFile(msgAuditFile)
+
+    return targetBranch && testsExist && primaryKoji
 }
 
 def buildVars(String ciMessage) {

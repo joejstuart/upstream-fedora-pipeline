@@ -3,7 +3,8 @@
 
 timestamps {
     def libraries = ['ci-pipeline'             : ['master', 'https://github.com/CentOS-PaaS-SIG/ci-pipeline.git'],
-                     'upstream-fedora-pipeline': ['master', 'https://github.com/CentOS-PaaS-SIG/upstream-fedora-pipeline.git']]
+                     'upstream-fedora-pipeline': ['master', 'https://github.com/CentOS-PaaS-SIG/upstream-fedora-pipeline.git'],
+                     'contra-lib'              : ['messaging', 'https://github.com/openshift/contra-lib.git']]
 
     libraries.each { name, repo ->
         library identifier: "${name}@${repo[0]}",
@@ -11,13 +12,6 @@ timestamps {
                                       remote: repo[1]])
 
     }
-
-    // Audit file for all messages sent.
-    msgAuditFile = "messages/message-audit.json"
-
-    // Number of times to keep retrying to make sure message is ingested
-    // by datagrepper
-    fedmsgRetryCount = 120
 
     properties(
             [
@@ -28,17 +22,18 @@ timestamps {
                             ]
                     ),
                     pipelineTriggers(
-                            [
-                                    [$class: 'CIBuildTrigger', checks: [[expectedValue: '1', field: 'new']], providerName: 'fedora-fedmsg', selector: 'topic = "org.fedoraproject.prod.buildsys.build.state.change"']]
+                            []
+                                   // [$class: 'CIBuildTrigger', checks: [[expectedValue: '1', field: 'new']], providerName: 'fedora-fedmsg', selector: 'topic = "org.fedoraproject.prod.buildsys.build.state.change"']]
                     )
             ]
     )
 
     node() {
 
-        messageVars = pipelineData.ciMessage(env.CI_MESSAGE)
+        stageVars = pipelineData.stageVars(env.CI_MESSAGE)
+        buildVars = pipelineData.buildVars(env.CI_MESSAGE)
 
-        ciPipeline {
+        ciPipeline(buildPrefix: 'Fedora_All_Packages_Pipeline', buildVars: buildVars) {
             stepName = 'upstream-fedora-pipeline-build-trigger'
             stage(stepName) {
 
@@ -46,12 +41,7 @@ timestamps {
                 queuedMsg = pipelineData.setMessageFields('package.queued', 'build')
 
                 validMessage = buildTrigger(skippedMsg: skippedMsg, queuedMsg: queuedMsg) {
-                    targetBranch = packagepipelineUtils.checkBranch()
-                    testsExist = pipelineUtils.checkTests(env.fed_repo, env.fed_branch, 'classic')
-                    primaryKoji = fed_instance == "primary"
-                    pipelineUtils.initializeAuditFile(msgAuditFile)
-
-                    return targetBranch && testsExist && primaryKoji
+                    pipelineData.upstreamTrigger()
 
                 }
 
@@ -60,20 +50,15 @@ timestamps {
             if (validMessage) {
                 stepName = 'schedule build'
                 params = [
-                        PROVIDED_KOJI_TASKID: messageVars['task_id'],
+                        PROVIDED_KOJI_TASKID: stageVars[stepName]['PROVIDED_KOJI_TASKID'],
                         CI_MESSAGE: env.CI_MESSAGE
                 ]
 
                 stage(stepName) {
-
-                   scheduleBuild(buildName: , params: params)
+                    branch = stageVars[stepName]['branch']
+                    scheduleBuild(buildName: "fedora-${branch}-build-pipeline", params: params)
                 }
 
-            } else {
-                echo "CI_MESSAGE was invalid. Skipping..."
-                messageFields = packagepipelineUtils.setMessageFields('package.ignored', 'build')
-                pipelineUtils.sendMessageWithAudit(messageFields['topic'], messageFields['properties'], messageFields['content'], msgAuditFile, fedmsgRetryCount)
-                currentBuild.description = "*Build Skipped*"
             }
         }
 
