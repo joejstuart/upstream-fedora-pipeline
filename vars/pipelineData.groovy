@@ -3,6 +3,8 @@ import org.contralib.Utils
 
 def stageVars(def branches, def fed_repo, def message) {
 
+
+
     def stages = [
             'koji-build':
 
@@ -89,7 +91,21 @@ def buildStageVars(String ciMessage) {
     def branches = utils.setBuildBranch(message['request'][1])
     def fed_repo = utils.repoFromRequest(message['request'][0])
 
-    return stageVars(branches, fed_repo, message)
+    def buildVars = [:]
+
+    buildVars['PROVIDED_KOJI_TASKID'] = message['task_id']
+    buildVars['fed_branch'] = branches[1]
+    buildVars['fed_repo'] = fed_repo
+    buildVars['fed_rev'] = message['rev']
+    buildVars['rpm_repo'] = "${env.WORKSPACE}/${fed_repo}_repo"
+    buildVars['package'] = fed_repo
+    buildVars['python3'] = 'yes'
+    buildVars['TEST_SUBJECTS'] = "${env.WORKSPACE}/images/test_subject.qcow2"
+    buildVars['package_name'] = fed_repo
+    buildVars['fed_instance'] = message['instance']
+    buildVars['branch'] = branches[0]
+
+    return buildVars
 
 }
 
@@ -97,10 +113,21 @@ def prStageVars(String ciMessage) {
     def utils = new Utils()
     def message = readJSON text: ciMessage
 
-    def branches = utils.setBuildBranch(message['info']['request'][1])
-    def fed_repo = utils.repoFromRequest(message['info']['request'][0])
+    def buildVars = [:]
+    buildVars['fed_branch'] = message['pullrequest']['branch']
+    if (buildVars['fed_branch'] == 'master') {
+        buildVars['branch'] = 'rawhide'
+    } else {
+        buildVars['branch'] = 'master'
+    }
 
-    return stageVars(branches, fed_repo, message)
+    buildVars['fed_repo'] = message['pullrequest']['project']['name'].toString().split('\n')[0].replaceAll('"', '\'')
+    buildVars['username'] = message['pullrequest']['user']['name'].toString().split('\n')[0].replaceAll('"', '\'')
+    buildVars['fed_rev'] = "PR-${message['pullrequest']['id']}"
+    buildVars['fed_pr_id'] = message['pullrequest']['id']
+    buildVars['fed_lastcid'] = message['pullrequest']['comments'].last()['id']
+
+    return buildVars
 
 }
 

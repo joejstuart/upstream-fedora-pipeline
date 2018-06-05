@@ -49,7 +49,7 @@ timestamps {
                 queuedMsg = pipelineData.setMessageFields('package.queued', 'build', env.CI_MESSAGE)
 
                 validMessage = buildTrigger(skippedMsg: skippedMsg, queuedMsg: queuedMsg) {
-                    pipelineData.prTrigger(stageVars[stepName])
+                    pipelineData.prTrigger(stageVars)
 
                 }
 
@@ -62,7 +62,7 @@ timestamps {
                 ]
 
                 stage(stepName) {
-                    branch = stageVars[stepName]['branch']
+                    branch = stageVars['branch']
                     scheduleBuild(buildName: "fedora-joe-build-pipeline", params: params)
                 }
 

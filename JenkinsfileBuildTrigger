@@ -40,7 +40,7 @@ timestamps {
                 queuedMsg = pipelineData.setMessageFields('package.queued', 'build', env.CI_MESSAGE)
 
                 validMessage = buildTrigger(skippedMsg: skippedMsg, queuedMsg: queuedMsg) {
-                    pipelineData.buildTrigger(stageVars[stepName])
+                    pipelineData.buildTrigger(stageVars)
 
                 }
 
@@ -49,12 +49,12 @@ timestamps {
             if (validMessage) {
                 stepName = 'schedule build'
                 params = [
-                        PROVIDED_KOJI_TASKID: stageVars[stepName]['PROVIDED_KOJI_TASKID'],
+                        PROVIDED_KOJI_TASKID: stageVars['PROVIDED_KOJI_TASKID'],
                         CI_MESSAGE: env.CI_MESSAGE
                 ]
 
                 stage(stepName) {
-                    branch = stageVars[stepName]['branch']
+                    branch = stageVars['branch']
                     scheduleBuild(buildName: "fedora-joe-build-pipeline", params: params)
                 }
 
