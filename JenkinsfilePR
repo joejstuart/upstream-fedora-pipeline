@@ -4,29 +4,7 @@ timestamps {
     // CANNED CI_MESSAGE
     def CANNED_CI_MESSAGE = '{"commit":{"username":"eseyman","stats":{"files":{"perl-Net-FTPSSL.spec":{"deletions":2,"additions":5,"lines":7},".gitignore":{"deletions":0,"additions":1,"lines":1},"sources":{"deletions":1,"additions":1,"lines":2}},"total":{"deletions":3,"files":3,"additions":7,"lines":10}},"name":"Emmanuel Seyman","rev":"c1c7de158fa72de5bd279daaaac9f75d0b3e65cd","namespace":"rpms","agent":"eseyman","summary":"Update to 0.40","repo":"perl-Net-FTPSSL","branch":"master","seen":false,"path":"/srv/git/repositories/rpms/perl-Net-FTPSSL.git","message":"Update to 0.40\n","email":"emmanuel@seyman.fr"},"topic":"org.fedoraproject.prod.git.receive"}'
 
-    // Initialize all the ghprb variables we need
-    env.ghprbGhRepository = env.ghprbGhRepository ?: 'joejstuart/upstream-fedora-pipeline'
-    env.ghprbActualCommit = env.ghprbActualCommit ?: 'CONTRA-503'
-    env.ghprbPullAuthorLogin = env.ghprbPullAuthorLogin ?: ''
-    env.ghprbPullId = env.ghprbPullId ?: ''
 
-    // Task ID to bypass rpm build and grab artifacts from koji
-    env.PROVIDED_KOJI_TASKID = env.PROVIDED_KOJI_TASKID ?: ''
-
-    // Needed for podTemplate()
-    env.SLAVE_TAG = env.SLAVE_TAG ?: 'stable'
-    env.RPMBUILD_TAG = env.RPMBUILD_TAG ?: 'stable'
-    env.CLOUD_IMAGE_COMPOSE_TAG = env.CLOUD_IMAGE_COMPOSE_TAG ?: 'stable'
-    env.SINGLEHOST_TEST_TAG = env.SINGLEHOST_TEST_TAG ?: 'stable'
-
-    // Audit file for all messages sent.
-    msgAuditFile = "messages/message-audit.json"
-
-    // Number of times to keep retrying to make sure message is ingested
-    // by datagrepper
-    fedmsgRetryCount = 120
-
-    // Execution ID for this run of the pipeline
     def executionID = UUID.randomUUID().toString()
 
     // Pod name to use
@@ -52,59 +30,6 @@ timestamps {
                                             templates: [[value: '+refs/heads/*:refs/remotes/@{remote}/*'],
                                                         [value: '+refs/pull/*:refs/remotes/origin/pr/*']]]]])
 
-    //noinspection GroovyAssignabilityCheck
-    properties(
-            [
-                    buildDiscarder(logRotator(artifactDaysToKeepStr: '30', artifactNumToKeepStr: '100', daysToKeepStr: '90', numToKeepStr: '100')),
-                    [$class: 'JobPropertyImpl', throttle: [count: 150, durationName: 'hour', userBoost: false]],
-                    parameters(
-                            [
-                                    string(name: 'PROVIDED_KOJI_TASKID',
-                                            defaultValue: '',
-                                            description: 'Give an integer only task id to use those artifacts and bypass the rpm build stage (example 123456)'),
-                                    string(name: 'ghprbActualCommit',
-                                            defaultValue: '',
-                                            description: 'The GitHub pull request commit'),
-                                    string(name: 'ghprbGhRepository',
-                                            defaultValue: '',
-                                            description: 'The repo the PR is against'),
-                                    string(name: 'sha1',
-                                            defaultValue: '',
-                                            description: ''),
-                                    string(name: 'ghprbPullId',
-                                            defaultValue: '',
-                                            description: 'Pull Request Number'),
-                                    string(name: 'ghprbPullAuthorLogin',
-                                            defaultValue: '',
-                                            description: 'Pull Request Author username'),
-                                    string(name: 'SLAVE_TAG',
-                                            defaultValue: 'stable',
-                                            description: 'Tag for slave image'),
-                                    string(name: 'RPMBUILD_TAG',
-                                            defaultValue: 'stable',
-                                            description: 'Tag for rpmbuild image'),
-                                    string(name: 'CLOUD_IMAGE_COMPOSE_TAG',
-                                            defaultValue: 'stable',
-                                            description: 'Tag for cloud-image-compose image'),
-                                    string(name: 'SINGLEHOST_TEST_TAG',
-                                            defaultValue: 'stable',
-                                            description: 'Tag for singlehost test image'),
-                                    string(name: 'DOCKER_REPO_URL',
-                                            defaultValue: '172.30.254.79:5000',
-                                            description: 'Docker repo url for Openshift instance'),
-                                    string(name: 'OPENSHIFT_NAMESPACE',
-                                            defaultValue: 'continuous-infra',
-                                            description: 'Project namespace for Openshift operations'),
-                                    string(name: 'OPENSHIFT_SERVICE_ACCOUNT',
-                                            defaultValue: 'jenkins',
-                                            description: 'Service Account for Openshift operations'),
-                                    string(name: 'CI_MESSAGE',
-                                            defaultValue: CANNED_CI_MESSAGE,
-                                            description: 'CI_MESSAGE')
-                            ]
-                    ),
-            ]
-    )
 
     containers = ['rpmbuild'           : [tag: env.RPMBUILD_TAG],
                   'cloud-image-compose': [tag: env.CLOUD_IMAGE_COMPOSE_TAG],
@@ -113,19 +38,19 @@ timestamps {
 
     deployOpenShiftTemplate(containers: containers, docker_repo_url: 'docker-registry.default.svc:5000') {
 
-        stageVars = pipelineData.buildStageVars(env.CI_MESSAGE)
+        stageVars = pipelineData.prStageVars(env.CI_MESSAGE)
 
         ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: stageVars['default']['package_name']) {
 
-            kojiBuild()
+            kojiBuild(stageVars: stageVars['koji-build'], containerScript: '/tmp/koji_build_pr.sh')
 
-            repoQuery()
+            repoQuery(stageVars: stageVars['repoquery'])
 
-            cloudImageCompose()
+            cloudImageCompose(stageVars: stageVars['cloud-image-compose'])
 
-            nvrVerify()
+            nvrVerify(stageVars: stageVars['nvr-verify'])
 
-            packageTests()
+            packageTests(stageVars: stageVars['package-tests'])
 
         }
 

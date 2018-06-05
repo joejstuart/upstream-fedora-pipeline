@@ -97,10 +97,10 @@ def prStageVars(String ciMessage) {
     def utils = new Utils()
     def message = readJSON text: ciMessage
 
-    def branches = utils.setBuildBranch(message['request'][1])
-    def fed_repo = utils.repoFromRequest(message['request'][0])
+    def branches = utils.setBuildBranch(message['info']['request'][1])
+    def fed_repo = utils.repoFromRequest(message['info']['request'][0])
 
-    return stageVars(brances, fed_repo, message)
+    return stageVars(branches, fed_repo, message)
 
 }
 
