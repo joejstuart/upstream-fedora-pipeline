@@ -126,6 +126,7 @@ def prStageVars(String ciMessage) {
     buildVars['fed_rev'] = "PR-${message['pullrequest']['id']}"
     buildVars['fed_pr_id'] = message['pullrequest']['id']
     buildVars['fed_lastcid'] = message['pullrequest']['comments'].last()['id']
+    buildVars['package_name'] = buildVars['fed_repo']
 
     return buildVars
 
