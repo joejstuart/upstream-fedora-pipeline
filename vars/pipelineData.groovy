@@ -90,20 +90,6 @@ def upstreamTrigger(def stageVars) {
     return targetBranch && testsExist && primaryKoji
 }
 
-def buildVars(String ciMessage) {
-    def utils = new Utils()
-    def message = readJSON text: ciMessage
-
-    def branches = utils.setBuildBranch(message['request'][1])
-    def fed_repo = utils.repoFromRequest(message['request'][0])
-
-    currentBuild.displayName = "Build #${env.BUILD_NUMBER} - Branch: ${branches[0]} - Package: ${fed_repo}"
-
-    def vars = [:]
-    vars['package_name'] = fed_repo
-    return vars
-}
-
 /**
  * Library to set message fields to be published
  * @param messageType: ${MAIN_TOPIC}.ci.pipeline.allpackages.<defined-in-README>

@@ -115,7 +115,7 @@ timestamps {
 
         buildVars = pipelineData.buildVars(env.CI_MESSAGE)
 
-        ciPipeline(buildPrefix: 'contra-build-pipeline', buildVars: buildVars) {
+        ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: buildVars['package_name']) {
 
             kojiBuild()
 
