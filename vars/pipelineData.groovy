@@ -74,7 +74,13 @@ def stageVars(String ciMessage) {
                             fed_branch               : branches[1],
                             fed_instance             : message['instance'],
                             branch                   : branches[0]
+                    ],
+            'default':
+                    [
+                            package_name              : fed_repo
+
                     ]
+
 
     ]
 

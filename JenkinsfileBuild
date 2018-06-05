@@ -113,9 +113,9 @@ timestamps {
 
     deployOpenShiftTemplate(containers: containers, docker_repo_url: 'docker-registry.default.svc:5000') {
 
-        buildVars = pipelineData.buildVars(env.CI_MESSAGE)
+        stageVars = pipelineData.stageVars(env.CI_MESSAGE)
 
-        ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: buildVars['package_name']) {
+        ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: stageVars['default']['package_name']) {
 
             kojiBuild()
 
