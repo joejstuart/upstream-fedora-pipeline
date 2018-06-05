@@ -1,9 +1,8 @@
-def call() {
-    def stageVars = pipelineData.stageVars(env.CI_MESSAGE)
+def call(Map stageVars = [:]) {
     stage('nvr-verify') {
         handlePipelineStep {
             executeInContainer(containerName: 'singlehost-test', containerScript: '/tmp/verify-rpm.sh',
-                    stageVars: stageVars['nvr-verify'])
+                    stageVars: stageVars)
 
         }
     }

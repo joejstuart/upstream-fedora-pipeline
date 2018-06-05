@@ -1,11 +1,10 @@
-def call() {
-    def stageVars = pipelineData.stageVars(env.CI_MESSAGE)
+def call(Map stageVars = [:]) {
     def currentStage = 'package-tests'
     stage(currentStage) {
         handlePipelineStep {
             try {
                 executeInContainer(containerName: 'singlehost-test', containerScript: '/tmp/package-test.sh',
-                        stageVars: stageVars['package-tests'])
+                        stageVars: stageVars)
 
             } catch (e) {
                 if (fileExists("${env.WORKSPACE}/${currentStage}/logs/test.log")) {

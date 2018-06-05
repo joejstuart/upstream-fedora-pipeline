@@ -1,9 +1,8 @@
-def call() {
-    def stageVars = pipelineData.stageVars(env.CI_MESSAGE)
+def call(Map stageVars = [:]) {
     stage('repoquery') {
         handlePipelineStep {
             executeInContainer(containerName: 'rpmbuild', containerScript: '/tmp/repoquery.sh',
-                    stageVars: stageVars['repoquery'])
+                    stageVars: stageVars)
         }
     }
 }
