@@ -87,7 +87,20 @@ def stageVars(String ciMessage) {
     return stages
 }
 
-def upstreamTrigger(def stageVars) {
+
+def prTrigger(def stageVars) {
+    validMessage = packagepipelineUtils.checkBranch(stageVars['branch'])
+    testsExist = pipelineUtils.checkTests(stageVars['fed_repo'], stageVars['fed_id'], 'classic')
+    // Function only returns false if comments exist,
+    // but the latest was uninteresting
+    commentTrigger = pipelineUtils.checkUpdatedPR(env.CI_MESSAGE, '[citest]')
+    // create audit message file
+    pipelineUtils.initializeAuditFile('messages/auditfile.json')
+
+    return validMessage && testsExist && commentTrigger
+}
+
+def buildTrigger(def stageVars) {
     def targetBranch = packagepipelineUtils.checkBranch(stageVars['branch'])
     def testsExist = pipelineUtils.checkTests(stageVars['fed_repo'], stageVars['fed_branch'], 'classic')
     def primaryKoji = stageVars['fed_instance'] == "primary"
