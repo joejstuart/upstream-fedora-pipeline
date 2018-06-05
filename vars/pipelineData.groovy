@@ -1,12 +1,7 @@
 import org.contralib.Utils
 
 
-def stageVars(String ciMessage) {
-    def utils = new Utils()
-    def message = readJSON text: ciMessage
-
-    def branches = utils.setBuildBranch(message['request'][1])
-    def fed_repo = utils.repoFromRequest(message['request'][0])
+def stageVars(def branches, def fed_repo, def message) {
 
     def stages = [
             'koji-build':
@@ -85,6 +80,28 @@ def stageVars(String ciMessage) {
     ]
 
     return stages
+}
+
+def buildStageVars(String ciMessage) {
+    def utils = new Utils()
+    def message = readJSON text: ciMessage
+
+    def branches = utils.setBuildBranch(message['request'][1])
+    def fed_repo = utils.repoFromRequest(message['request'][0])
+
+    return stageVars(branches, fed_repo, message)
+
+}
+
+def prStageVars(String ciMessage) {
+    def utils = new Utils()
+    def message = readJSON text: ciMessage
+
+    def branches = utils.setBuildBranch(message['request'][1])
+    def fed_repo = utils.repoFromRequest(message['request'][0])
+
+    return stageVars(brances, fed_repo, message)
+
 }
 
 
