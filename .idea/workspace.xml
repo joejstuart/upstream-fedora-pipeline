@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="cdf954a2-f261-4bd5-bb3b-d354e47a3f75" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/JenkinsfilePRTrigger" afterPath="$PROJECT_DIR$/JenkinsfilePRTrigger" />
+      <change beforePath="$PROJECT_DIR$/vars/pipelineData.groovy" afterPath="$PROJECT_DIR$/vars/pipelineData.groovy" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -34,7 +34,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="JenkinsfilePRTrigger" pinned="false" current-in-tab="true">
+      <file leaf-file-name="JenkinsfilePRTrigger" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/JenkinsfilePRTrigger">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="80">
@@ -84,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pipelineData.groovy" pinned="false" current-in-tab="false">
+      <file leaf-file-name="pipelineData.groovy" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/vars/pipelineData.groovy">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="520">
-              <caret line="128" column="51" lean-forward="false" selection-start-line="128" selection-start-column="51" selection-end-line="128" selection-end-column="51" />
+            <state relative-caret-position="380">
+              <caret line="127" column="54" lean-forward="false" selection-start-line="127" selection-start-column="54" selection-end-line="127" selection-end-column="54" />
               <folding />
             </state>
           </provider>
@@ -195,8 +195,8 @@
         <option value="$PROJECT_DIR$/JenkinsfileBuild" />
         <option value="$PROJECT_DIR$/JenkinsfilePR" />
         <option value="$PROJECT_DIR$/JenkinsfileBuildTrigger" />
-        <option value="$PROJECT_DIR$/vars/pipelineData.groovy" />
         <option value="$PROJECT_DIR$/JenkinsfilePRTrigger" />
+        <option value="$PROJECT_DIR$/vars/pipelineData.groovy" />
       </list>
     </option>
   </component>
@@ -716,18 +716,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/vars/pipelineData.groovy">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="520">
-          <caret line="128" column="51" lean-forward="false" selection-start-line="128" selection-start-column="51" selection-end-line="128" selection-end-column="51" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/JenkinsfilePRTrigger">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="80">
           <caret line="43" column="87" lean-forward="false" selection-start-line="43" selection-start-column="87" selection-end-line="43" selection-end-column="87" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/vars/pipelineData.groovy">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="127" column="54" lean-forward="false" selection-start-line="127" selection-start-column="54" selection-end-line="127" selection-end-column="54" />
           <folding />
         </state>
       </provider>
