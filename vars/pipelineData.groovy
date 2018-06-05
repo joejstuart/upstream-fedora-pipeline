@@ -138,7 +138,7 @@ def prStageVars(String ciMessage) {
 
 def prTrigger(def stageVars) {
     validMessage = packagepipelineUtils.checkBranch(stageVars['branch'])
-    testsExist = pipelineUtils.checkTests(stageVars['fed_repo'], stageVars['fed_id'], 'classic')
+    testsExist = pipelineUtils.checkTests(stageVars['fed_repo'], stageVars['fed_id'].toString(), 'classic')
     // Function only returns false if comments exist,
     // but the latest was uninteresting
     commentTrigger = pipelineUtils.checkUpdatedPR(env.CI_MESSAGE, '[citest]')
