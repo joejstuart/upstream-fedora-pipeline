@@ -117,15 +117,15 @@ timestamps {
 
         ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: stageVars['default']['package_name']) {
 
-            kojiBuild()
+            kojiBuild(stageVars: stageVars['koji-build'])
 
-            repoQuery()
+            repoQuery(stageVars: stageVars['repoquery'])
 
-            cloudImageCompose()
+            cloudImageCompose(stageVars: stageVars['cloud-image-compose'])
 
-            nvrVerify()
+            nvrVerify(stageVars: stageVars['nvr-verify'])
 
-            packageTests()
+            packageTests(stageVars: stageVars['package-tests'])
 
         }
 
