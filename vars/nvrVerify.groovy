@@ -6,7 +6,7 @@ def call(Map parameters = [:]) {
     def afterRunMsg = parameters.get('afterRunMsg')
     def failedRunMsg = parameters.get('failedRunMsg')
 
-    stageVars['rpm_repo'] = "/etc/yum.repos.d/${stageVars['fed_repo']}_repo"
+    stageVars['rpm_repo'] = "/etc/yum.repos.d/${stageVars['fed_repo']}"
     stage('nvr-verify') {
         handlePipelineStep(beforeRunMsg: beforeRunMsg, afterRunMsg: afterRunMsg, failedRunMsg: failedRunMsg) {
             executeInContainer(containerName: containerName, containerScript: containerScript,
