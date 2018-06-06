@@ -115,7 +115,7 @@ timestamps {
 
         stageVars = pipelineData.buildStageVars(env.CI_MESSAGE)
 
-        ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: stageVars['default']['package_name']) {
+        ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: stageVars['package_name']) {
 
             prepareEnvironment(stageVars: stageVars)
 
