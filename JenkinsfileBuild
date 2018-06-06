@@ -117,6 +117,8 @@ timestamps {
 
         ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: stageVars['default']['package_name']) {
 
+            prepareEnvironment(stageVars: stageVars)
+
             kojiBuild(stageVars: stageVars)
 
             repoQuery(stageVars: stageVars)

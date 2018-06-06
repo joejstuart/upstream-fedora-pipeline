@@ -42,6 +42,8 @@ deployOpenShiftTemplate(containers: containers, docker_repo_url: 'docker-registr
 
     ciPipeline(buildPrefix: 'contra-build-pipeline', package_name: stageVars['default']['package_name']) {
 
+        prepareEnvironment(stageVars: stageVars)
+
         kojiBuild(stageVars: stageVars, containerScript: '/tmp/koji_build_pr.sh')
 
         repoQuery(stageVars: stageVars)

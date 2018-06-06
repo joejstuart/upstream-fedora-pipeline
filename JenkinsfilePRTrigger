@@ -42,6 +42,8 @@ timestamps {
         stageVars = pipelineData.prStageVars(env.CI_MESSAGE)
 
         ciPipeline(buildPrefix: 'Fedora_All_Packages_Pipeline', package_name: stageVars['package_name']) {
+            prepareEnvironment(stageVars: stageVars)
+
             stepName = 'upstream-fedora-pipeline-build-trigger'
             stage(stepName) {
 

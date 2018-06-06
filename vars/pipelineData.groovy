@@ -21,6 +21,7 @@ def buildStageVars(String ciMessage) {
     buildVars['package_name'] = fed_repo
     buildVars['fed_instance'] = message['instance']
     buildVars['branch'] = branches[0]
+    buildVars['displayName'] = "Build #${env.BUILD_NUMBER} - Branch: ${buildVars['branch']} - Package: ${buildVars['fed_repo']}"
 
     return buildVars
 
@@ -47,6 +48,7 @@ def prStageVars(String ciMessage) {
         buildVars['fed_lastcid'] = message['pullrequest']['comments'].last()['id']
     }
     buildVars['package_name'] = buildVars['fed_repo']
+    buildVars['displayName'] = "Build #${env.BUILD_NUMBER} - Branch: ${buildVars['branch']} - Package: ${buildVars['fed_repo']}"
 
     return buildVars
 
