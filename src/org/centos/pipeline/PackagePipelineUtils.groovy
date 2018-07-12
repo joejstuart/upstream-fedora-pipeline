@@ -3,8 +3,6 @@ package org.centos.pipeline
 
 import org.centos.*
 
-import groovy.json.JsonSlurper
-
 /**
  * Library to check the dist branch to as rawhide should map to a release number
  * This value will begin with 'fc'
@@ -43,11 +41,14 @@ def setDistBranch() {
  */
 def setMessageFields(String messageType, String artifact) {
     topic = "${MAIN_TOPIC}.ci.pipeline.allpackages-${artifact}.${messageType}"
+    print("Topic is " + topic)
 
     // Create a HashMap of default message property keys and values
     // These properties should be applicable to ALL message types.
     // If something is applicable to only some subset of messages,
     // add it below per the existing examples.
+
+    taskid = env.fed_task_id ?: env.fed_id
 
     def messageProperties = [
             branch           : env.fed_branch,
@@ -57,12 +58,14 @@ def setMessageFields(String messageType, String artifact) {
             nvr              : env.nvr,
             original_spec_nvr: env.original_spec_nvr,
             ref              : env.basearch,
+            scratch          : env.isScratch ? env.isScratch.toBoolean() : "",
             repo             : env.fed_repo,
-            rev              : (artifact == 'build') ? "kojitask-${env.fed_task_id}" : env.fed_rev,
+            rev              : (artifact == 'build') ? "kojitask-" + taskid : env.fed_rev,
             status           : currentBuild.currentResult,
             test_guidance    : "''",
+            comment_id       : env.fed_lastcid,
             topic            : topic,
-            username         : env.fed_username,
+            username         : env.fed_owner,
     ]
 
     // Add image type to appropriate message types
@@ -169,14 +172,11 @@ def setStageEnvVars(String stage){
                      fed_branch               : env.fed_branch
 
              ],
-             "image-boot-sanity"                               : [
-                     rpm_repo                 : env.WORKSPACE + "/" + env.fed_repo + "_repo",
-                     package                  : env.fed_repo,
+             "nvr-verify"                                     : [
+                     rpm_repo                 : "/etc/yum.repos.d/" + env.fed_repo,
              ],
              "package-tests"                                   : [
-                     TEST_SUBJECTS            : "${env.WORKSPACE}/test_subject.qcow2",
                      package                  : env.fed_repo,
-                     python3                  : "yes",
                      TAG                      : "classic",
                      branch                   : env.fed_branch,
                      build_pr_id              : (env.fed_pr_id) ?: ''
@@ -227,7 +227,7 @@ def watchForMessages(String msg_provider, String message) {
                 ],
                 overrides: [topic: 'org.centos.stage']
         echo msg
-        def msg_data = new JsonSlurper().parseText(msg)
+        def msg_data = readJSON text: msg
         allFound = true
 
         def errorMsg = ""
@@ -264,11 +264,10 @@ def watchForMessages(String msg_provider, String message) {
  */
 def ciPipeline(Closure body) {
     ansiColor('xterm') {
-        timestamps {
-            deleteDir()
+        deleteDir()
 
-            body()
-        }
+        body()
+
     }
 }
 
